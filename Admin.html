@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Hidden Disabilities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; 
+            color: #1c1917; 
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .interactive-card {
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .active-card {
+            border-color: #eab308; 
+            background-color: #fefce8; 
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-yellow-200 selection:text-stone-900">
+
+<!-- Chosen Palette: Warm Neutrals & Sunflower Accents (Stone, Amber/Yellow, Slate) -->
+<!-- Application Structure Plan: A linear yet interactive storytelling approach. Starts with a high-impact 'Hero' section defining the concept. Moves into a 'Scale' section using a donut chart to shock users with the 80% statistic. Then, an interactive 'Spectrum' grid allows users to explore specific categories at their own pace, preventing cognitive overload. Followed by an 'Impact' section using a bar chart to quantify workplace/social challenges. Concludes with an 'Actionable Inclusion' section to leave the user with practical takeaways. This flow moves from Awareness -> Scale -> Detail -> Impact -> Action. -->
+<!-- Visualization & Content Choices: 1. Scale Stat -> Goal: Inform -> Viz: Donut Chart -> Interaction: Hover tooltips -> Justification: Clearly contrasts visible vs invisible majorities -> Library: Chart.js. 2. Disability Categories -> Goal: Organize/Inform -> Viz: Interactive Grid Cards -> Interaction: Click to load specific details in an adjacent panel -> Justification: Allows user-driven exploration of complex text data without clutter -> Method: Vanilla JS & Tailwind Grid. 3. Workplace Impact -> Goal: Compare -> Viz: Horizontal Bar Chart -> Interaction: Hover tooltips -> Justification: Easily compares different types of barriers faced -> Library: Chart.js. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <nav class="sticky top-0 z-50 bg-stone-50/90 backdrop-blur border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl">🌻</span>
+                    <span class="font-bold text-xl tracking-tight text-stone-800">Hidden Realities</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#scale" class="text-stone-600 hover:text-stone-900 font-medium transition-colors">The Scale</a>
+                    <a href="#spectrum" class="text-stone-600 hover:text-stone-900 font-medium transition-colors">The Spectrum</a>
+                    <a href="#impact" class="text-stone-600 hover:text-stone-900 font-medium transition-colors">The Impact</a>
+                    <a href="#inclusion" class="text-stone-600 hover:text-stone-900 font-medium transition-colors">Inclusion</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <section id="hero" class="text-center space-y-6 max-w-4xl mx-auto pt-10">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-stone-900 tracking-tight">
+                Not all disabilities <br> <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-amber-600">look like disabilities.</span>
+            </h1>
+            <p class="text-xl text-stone-600 leading-relaxed">
+                A hidden (or invisible) disability is a physical, mental, or neurological condition that is not immediately apparent to others. This lack of visibility often leads to misunderstandings, false assumptions, and a lack of necessary support. Explore the data and lived experiences beneath the surface.
+            </p>
+            <div class="pt-6">
+                <a href="#scale" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-full text-stone-900 bg-yellow-400 hover:bg-yellow-500 transition-colors shadow-sm">
+                    Begin Exploration ⬇
+                </a>
+            </div>
+        </section>
+
+        <section id="scale" class="scroll-mt-24 grid md:grid-cols-2 gap-12 items-center bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-stone-100">
+            <div class="space-y-6">
+                <div class="inline-block px-3 py-1 rounded-full bg-stone-100 text-stone-600 text-sm font-semibold tracking-wide uppercase">The Iceberg Effect</div>
+                <h2 class="text-3xl font-bold text-stone-900">The 80% Majority</h2>
+                <p class="text-lg text-stone-600">
+                    This section illustrates the global prevalence of disabilities. The World Health Organization estimates that over 1.3 billion people experience significant disability. What is profoundly misunderstood is the composition of this group.
+                </p>
+                <p class="text-lg text-stone-600">
+                    An estimated <strong>80% of all disabilities are invisible</strong>. Because they cannot be seen, individuals frequently face skepticism when utilizing accessible facilities or requesting necessary accommodations. Interact with the chart to view the breakdown.
+                </p>
+            </div>
+            <div class="w-full flex justify-center items-center bg-stone-50 p-6 rounded-2xl">
+                <div class="chart-container">
+                    <canvas id="prevalenceChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="spectrum" class="scroll-mt-24 space-y-10">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h2 class="text-3xl font-bold text-stone-900">The Spectrum of Invisibility</h2>
+                <p class="text-lg text-stone-600">
+                    Hidden disabilities span a vast array of conditions. This interactive section allows you to explore four major categories. Click on any category card below to reveal specific examples, common daily challenges, and insights into how these conditions manifest invisibly.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 flex flex-col gap-4" id="category-buttons">
+                    <button data-target="neuro" class="category-btn active-card interactive-card w-full text-left p-6 rounded-2xl border-2 border-stone-200 bg-white">
+                        <div class="text-2xl mb-2">🧠</div>
+                        <h3 class="text-xl font-bold text-stone-900">Neurological</h3>
+                        <p class="text-sm text-stone-500 mt-1">Conditions affecting the brain and nervous system.</p>
+                    </button>
+                    <button data-target="chronic" class="category-btn interactive-card w-full text-left p-6 rounded-2xl border-2 border-stone-200 bg-white">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <h3 class="text-xl font-bold text-stone-900">Chronic Energy & Pain</h3>
+                        <p class="text-sm text-stone-500 mt-1">Conditions involving persistent pain or severe fatigue.</p>
+                    </button>
+                    <button data-target="mental" class="category-btn interactive-card w-full text-left p-6 rounded-2xl border-2 border-stone-200 bg-white">
+                        <div class="text-2xl mb-2">🧩</div>
+                        <h3 class="text-xl font-bold text-stone-900">Mental Health</h3>
+                        <p class="text-sm text-stone-500 mt-1">Conditions impacting emotional and psychological well-being.</p>
+                    </button>
+                    <button data-target="sensory" class="category-btn interactive-card w-full text-left p-6 rounded-2xl border-2 border-stone-200 bg-white">
+                        <div class="text-2xl mb-2">👁️</div>
+                        <h3 class="text-xl font-bold text-stone-900">Sensory</h3>
+                        <p class="text-sm text-stone-500 mt-1">Conditions affecting hearing, vision, or sensory processing.</p>
+                    </button>
+                </div>
+
+                <div class="lg:col-span-2 bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-stone-100 flex flex-col justify-center min-h-[400px]">
+                    <div id="content-display" class="space-y-6 transition-opacity duration-300">
+                        <div class="flex items-center gap-4 border-b border-stone-100 pb-4">
+                            <span id="display-icon" class="text-4xl bg-stone-50 p-4 rounded-2xl">🧠</span>
+                            <div>
+                                <h3 id="display-title" class="text-3xl font-bold text-stone-900">Neurological</h3>
+                                <p id="display-subtitle" class="text-stone-500 font-medium">Differences in brain function and information processing.</p>
+                            </div>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-8 pt-4">
+                            <div>
+                                <h4 class="font-semibold text-stone-900 mb-3 text-lg border-l-4 border-yellow-400 pl-3">Common Examples</h4>
+                                <ul id="display-examples" class="space-y-2 text-stone-600">
+                                    <li>• Autism Spectrum Condition</li>
+                                    <li>• ADHD (Attention Deficit Hyperactivity Disorder)</li>
+                                    <li>• Dyslexia & Dyspraxia</li>
+                                    <li>• Epilepsy</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-stone-900 mb-3 text-lg border-l-4 border-stone-400 pl-3">Invisible Challenges</h4>
+                                <ul id="display-challenges" class="space-y-2 text-stone-600">
+                                    <li>• Sensory overload in standard environments</li>
+                                    <li>• Executive functioning and time management</li>
+                                    <li>• Masking (hiding traits to fit in, causing exhaustion)</li>
+                                    <li>• Unpredictable energy levels or seizures</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="bg-stone-50 p-6 rounded-xl mt-6 border border-stone-100 text-stone-700 italic" id="display-quote">
+                            "People think because I can articulate well, my ADHD isn't severe. They don't see the hours of paralysis or the extreme systems I need just to function normally."
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="scroll-mt-24 space-y-10">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <h2 class="text-3xl font-bold text-stone-900">The Cost of Invisibility</h2>
+                <p class="text-lg text-stone-600">
+                    This section quantifies the societal and professional impact of living with a hidden disability. The chart below visualizes survey data regarding workplace disclosure and the barriers individuals face. Hover over the bars to examine the disparity between living with the condition and feeling safe enough to disclose it.
+                </p>
+            </div>
+            
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-sm border border-stone-100 grid md:grid-cols-3 gap-12 items-center">
+                <div class="md:col-span-2 w-full">
+                     <div class="chart-container">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-6 md:col-span-1">
+                    <div class="p-6 bg-red-50 rounded-2xl border border-red-100">
+                        <div class="text-3xl font-bold text-red-600 mb-2">Only 39%</div>
+                        <p class="text-stone-700 text-sm">of employees with invisible disabilities disclose them to their HR departments.</p>
+                    </div>
+                    <div class="p-6 bg-stone-50 rounded-2xl border border-stone-100">
+                        <div class="text-3xl font-bold text-stone-800 mb-2">Top Fear:</div>
+                        <p class="text-stone-700 text-sm">Being judged as less capable or missing out on career progression opportunities.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="inclusion" class="scroll-mt-24 bg-stone-900 text-stone-50 rounded-3xl p-8 md:p-16">
+            <div class="max-w-4xl mx-auto space-y-12">
+                <div class="text-center space-y-4">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Fostering True Inclusion</h2>
+                    <p class="text-lg text-stone-400">
+                        Understanding is the first step. Action is the second. Here are practical ways society, workplaces, and individuals can create a more inclusive environment for those with hidden disabilities.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-stone-800 p-8 rounded-2xl border border-stone-700">
+                        <div class="text-4xl mb-4">🌻</div>
+                        <h3 class="text-xl font-bold text-white mb-3">The Sunflower Symbol</h3>
+                        <p class="text-stone-300 mb-4">
+                            The Hidden Disabilities Sunflower is a globally recognized tool. Wearing the Sunflower lanyard, badge, or pin discreetly indicates to people around you that you have a non-visible disability and may need additional support, help, or a little more time.
+                        </p>
+                        <div class="text-sm font-semibold text-yellow-400">Action: Recognize and respect the symbol.</div>
+                    </div>
+
+                    <div class="bg-stone-800 p-8 rounded-2xl border border-stone-700">
+                        <div class="text-4xl mb-4">🏢</div>
+                        <h3 class="text-xl font-bold text-white mb-3">Workplace Adjustments</h3>
+                        <p class="text-stone-300 mb-4">
+                            Accommodations shouldn't require a visible wheelchair. Standardizing flexible working hours, remote work options, quiet spaces, and asynchronous communication helps everyone, but is crucial for hidden disabilities.
+                        </p>
+                        <div class="text-sm font-semibold text-yellow-400">Action: Implement universal design principles.</div>
+                    </div>
+
+                    <div class="bg-stone-800 p-8 rounded-2xl border border-stone-700">
+                        <div class="text-4xl mb-4">🗣️</div>
+                        <h3 class="text-xl font-bold text-white mb-3">Empathetic Language</h3>
+                        <p class="text-stone-300 mb-4">
+                            Avoid phrases like "But you look fine!" or "Everyone gets a bit distracted." These minimize the person's experience. Believe individuals when they disclose their limitations, even if they vary day-to-day.
+                        </p>
+                        <div class="text-sm font-semibold text-yellow-400">Action: Listen without judgment.</div>
+                    </div>
+
+                    <div class="bg-stone-800 p-8 rounded-2xl border border-stone-700">
+                        <div class="text-4xl mb-4">⚖️</div>
+                        <h3 class="text-xl font-bold text-white mb-3">Policy & Accessibility</h3>
+                        <p class="text-stone-300 mb-4">
+                            Ensure accessible parking and facilities are not policed by the public based on visual judgment. Create clear, non-punitive pathways for disclosing health needs in educational and professional settings.
+                        </p>
+                        <div class="text-sm font-semibold text-yellow-400">Action: Advocate for inclusive policies.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 py-10 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-stone-500 text-sm">
+            <p>Interactive Exploration by Information Architect. Data represented is aggregated from general advocacy statistics (e.g., WHO, Hidden Disabilities Sunflower network) for educational demonstration.</p>
+        </div>
+    </footer>
+
+    <script>
+        const prevalenceCtx = document.getElementById('prevalenceChart').getContext('2d');
+        new Chart(prevalenceCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Invisible Disabilities', 'Visible Disabilities'],
+                datasets: [{
+                    data: [80, 20],
+                    backgroundColor: [
+                        '#eab308', 
+                        '#e5e5e5'  
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { family: "'Inter', sans-serif", size: 14 },
+                            color: '#444'
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + context.label + ': ' + context.parsed + '%';
+                            }
+                        },
+                        backgroundColor: '#1c1917',
+                        titleFont: { family: "'Inter', sans-serif", size: 14 },
+                        bodyFont: { family: "'Inter', sans-serif", size: 14 },
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                }
+            }
+        });
+
+        const impactCtx = document.getElementById('impactChart').getContext('2d');
+        new Chart(impactCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Fear of Discrimination', 'Lack of Understanding', 'Fear of Retaliation', 'Complex Accommodation Process'],
+                datasets: [{
+                    label: '% of Individuals Citing Barrier',
+                    data: [62, 55, 43, 38],
+                    backgroundColor: '#fbbf24',
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1c1917',
+                        titleFont: { family: "'Inter', sans-serif", size: 13 },
+                        bodyFont: { family: "'Inter', sans-serif", size: 14 },
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.x + '% reported this barrier';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        max: 100,
+                        grid: { color: '#f5f5f4' },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif" },
+                            callback: function(value) { return value + "%" }
+                        }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { family: "'Inter', sans-serif", size: 13 },
+                            color: '#444'
+                        }
+                    }
+                }
+            }
+        });
+
+        const categoryContent = {
+            neuro: {
+                icon: '🧠',
+                title: 'Neurological',
+                subtitle: 'Differences in brain function and information processing.',
+                examples: ['• Autism Spectrum Condition', '• ADHD (Attention Deficit)', '• Dyslexia & Dyspraxia', '• Epilepsy & Tic Disorders'],
+                challenges: ['• Sensory overload in standard environments', '• Executive functioning and time management', '• Masking (hiding traits to fit in, causing exhaustion)', '• Unpredictable energy levels or seizures'],
+                quote: '"People think because I can articulate well, my ADHD isn\'t severe. They don\'t see the hours of paralysis or the extreme systems I need just to function normally."'
+            },
+            chronic: {
+                icon: '⚡',
+                title: 'Chronic Energy & Pain',
+                subtitle: 'Conditions involving persistent pain, severe fatigue, or autoimmune responses.',
+                examples: ['• Fibromyalgia', '• Chronic Fatigue Syndrome (ME/CFS)', '• Endometriosis', '• Lupus & Rheumatoid Arthritis'],
+                challenges: ['• The "Spoon Theory" (severely limited daily energy)', '• Pain that fluctuates unpredictably hour by hour', '• Side effects from complex medication regimes', '• Disbelief from peers because the pain is unseen'],
+                quote: '"Some days I can run errands, other days I can\'t get out of bed. The hardest part is people assuming I\'m just being lazy on the bad days."'
+            },
+            mental: {
+                icon: '🧩',
+                title: 'Mental Health',
+                subtitle: 'Conditions impacting emotional, psychological, and social well-being.',
+                examples: ['• Clinical Depression', '• General Anxiety Disorder', '• PTSD & C-PTSD', '• Bipolar Disorder'],
+                challenges: ['• Debilitating panic attacks triggered by unseen factors', '• Cognitive fog and memory issues', '• Exhaustion from battling internal psychological states', '• Severe stigma preventing open communication'],
+                quote: '"When I break my arm, everyone signs my cast. When my depression flares up, people avoid eye contact. The silence is the heaviest part."'
+            },
+            sensory: {
+                icon: '👁️',
+                title: 'Sensory',
+                subtitle: 'Conditions affecting hearing, vision, or processing of sensory input.',
+                examples: ['• Hard of Hearing / Tinnitus', '• Restricted Vision (not fully blind)', '• Auditory Processing Disorder', '• Vestibular Disorders (Vertigo)'],
+                challenges: ['• Group conversations with background noise', '• Navigating spaces with poor lighting or signage', '• Exhaustion from intense concentration required to process inputs', '• Sudden loss of balance or spatial awareness'],
+                quote: '"I don\'t use a cane, but my peripheral vision is entirely gone. People bump into me constantly and assume I\'m just being careless."'
+            }
+        };
+
+        const buttons = document.querySelectorAll('.category-btn');
+        const displayIcon = document.getElementById('display-icon');
+        const displayTitle = document.getElementById('display-title');
+        const displaySubtitle = document.getElementById('display-subtitle');
+        const displayExamples = document.getElementById('display-examples');
+        const displayChallenges = document.getElementById('display-challenges');
+        const displayQuote = document.getElementById('display-quote');
+        const contentDisplay = document.getElementById('content-display');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                buttons.forEach(btn => {
+                    btn.classList.remove('active-card');
+                    btn.classList.add('border-stone-200');
+                });
+                button.classList.add('active-card');
+                button.classList.remove('border-stone-200');
+
+                const target = button.getAttribute('data-target');
+                const data = categoryContent[target];
+
+                contentDisplay.style.opacity = '0';
+
+                setTimeout(() => {
+                    displayIcon.textContent = data.icon;
+                    displayTitle.textContent = data.title;
+                    displaySubtitle.textContent = data.subtitle;
+                    
+                    displayExamples.innerHTML = data.examples.map(ex => `<li>${ex}</li>`).join('');
+                    displayChallenges.innerHTML = data.challenges.map(ch => `<li>${ch}</li>`).join('');
+                    displayQuote.textContent = data.quote;
+
+                    contentDisplay.style.opacity = '1';
+                }, 150);
+            });
+        });
+    </script>
+</body>
+</html>
